@@ -1,0 +1,8 @@
+{
+  "unichain-testnet": {
+    "Unilend": {
+      "address": "0x72be0bADDD3B90F3202021919C7755A1e86386ae",
+      "startBlock": 4914293
+    }
+  }
+}

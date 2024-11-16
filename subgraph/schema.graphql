@@ -1,0 +1,52 @@
+type BorrowCollected @entity(immutable: true) {
+  id: Bytes!
+  borrower: Bytes! # address
+  tokenId: BigInt! # uint256
+  amount0: BigInt! # uint256
+  amount1: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type BorrowCreated @entity(immutable: true) {
+  id: Bytes!
+  lender: Bytes! # address
+  borrower: Bytes! # address
+  tokenId: BigInt! # uint256
+  price: BigInt! # uint256
+  deadline: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type LendCreated @entity(immutable: true) {
+  id: Bytes!
+  lender: Bytes! # address
+  tokenId: BigInt! # uint256
+  price: BigInt! # uint256
+  time: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type LendRevoked @entity(immutable: true) {
+  id: Bytes!
+  lender: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TokenClaimedBack @entity(immutable: true) {
+  id: Bytes!
+  lender: Bytes! # address
+  borrower: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
