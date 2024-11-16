@@ -4,7 +4,7 @@ import "../styles/global.css";
 import "@rainbow-me/rainbowkit/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
-import { RainbowKitProvider, type Locale } from "@rainbow-me/rainbowkit";
+import { darkTheme, RainbowKitProvider, type Locale } from "@rainbow-me/rainbowkit";
 import { config } from "../wagmi";
 import Nav from "@/components/Nav";
 
@@ -20,7 +20,11 @@ export default function PageLayout({
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider locale={locale}>
+        <RainbowKitProvider 
+        theme={darkTheme({
+          accentColor: '#FF4E88',
+        })}
+        locale={locale}>
           <Nav />
           {children}
         </RainbowKitProvider>
