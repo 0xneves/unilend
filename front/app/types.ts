@@ -1,15 +1,20 @@
 export interface LendPosition {
-  id: string;
-  duration: number;
+  lender: string;
   tokenId: string;
-  price: number;
-  blockScanUrl: string;
+  price: bigint;
+  time: number;
+  isAvailable: boolean;
+  blockscoutUrl: string;
 }
 
 export interface BorrowPosition {
-  id: string;
-  duration: number;
+  lender: string;
+  borrower: string;
   tokenId: string;
-  price: number;
-  blockScanUrl: string;
+  price: bigint;
+  deadline: number;
+  isActive: boolean;
+  blockscoutUrl: string;
 }
+
+

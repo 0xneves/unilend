@@ -1,10 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ExternalLink } from "lucide-react";
-import { type LendPosition } from "@/app/types";
+import { type BorrowPosition, type LendPosition } from "@/app/types";
 
-const PositionCard = ({ position }: { position: LendPosition }) => {
+const PositionCard = ({
+  position,
+}: {
+  position: LendPosition | BorrowPosition;
+}) => {
   return (
-    <Card key={position.id} className="hover:shadow-lg transition-shadow">
+    <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
         <CardTitle className="text-xl">Token #{position.tokenId}</CardTitle>
       </CardHeader>
@@ -12,8 +16,21 @@ const PositionCard = ({ position }: { position: LendPosition }) => {
       <CardContent>
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Duration:</span>
-            <span className="font-medium">{position.duration} days</span>
+            {"time" in position ? (
+              <>
+                <span className="text-muted-foreground">Duration:</span>
+                <span className="font-medium">{`${position.time} seconds`}</span>
+              </>
+            ) : (
+              <>
+                <span className="text-muted-foreground">Deadline:</span>
+                <span className="font-medium">
+                  {new Date(Number(position.deadline) * 1000).toLocaleString(undefined, {
+                    timeZoneName: 'short'
+                  })}
+                </span>
+              </>
+            )}
           </div>
 
           <div className="flex justify-between items-center">
@@ -22,12 +39,12 @@ const PositionCard = ({ position }: { position: LendPosition }) => {
           </div>
 
           <a
-            href={position.blockScanUrl}
+            href={position.blockscoutUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center gap-2 text-primary hover:underline mt-2"
           >
-            View on BlockScan
+            View on Blockscout
             <ExternalLink size={16} />
           </a>
         </div>
