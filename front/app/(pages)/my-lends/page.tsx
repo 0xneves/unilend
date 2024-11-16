@@ -38,7 +38,7 @@ export default function MyLends() {
           const position: LendPosition = {
             lender: lendPosition.lender,
             tokenId: lendPosition.tokenId.toString(),
-            price: formatEther(lendPosition.price),
+            price: lendPosition.price,
             time: lendPosition.time,
             isAvailable: lendPosition.isAvailable,
             blockscoutUrl: `https://unichain-sepolia.blockscout.com/address/${UNILEND_ADDRESS}`, // adjust for your network
