@@ -1,6 +1,8 @@
 # Unilend
 
-Borrow and Lending protocol for UniswapV3 LP positions. Cash upfront for the lender and gambling for the borrower.
+Borrow and Lending protocol for UniswapV3 LP positions on Unichain. Cash upfront for the lender and gambling for the borrower.
+
+[Contract on Blockscout](https://unichain-sepolia.blockscout.com/address/0x72be0bADDD3B90F3202021919C7755A1e86386ae?tab=contract)
 
 ## Getting Started
 
