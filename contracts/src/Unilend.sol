@@ -15,6 +15,14 @@ contract Unilend is IERC721Receiver, IUnilend {
     nonfungiblePositionManager = INonfungiblePositionManager(_nonfungiblePositionManager);
   }
 
+  function lends(uint256 tokenId) external view returns (Lend memory) {
+    return _lends[tokenId];
+  }
+
+  function borrows(uint256 tokenId) external view returns (Borrow memory) {
+    return _borrows[tokenId];
+  }
+
   function lend(uint256 tokenId, uint256 price, uint256 duration) external {
     if (nonfungiblePositionManager.ownerOf(tokenId) != msg.sender) revert TokenNotOwned();
 
