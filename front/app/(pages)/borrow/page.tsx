@@ -85,11 +85,11 @@ export default function Borrow() {
   }, [address]);
 
   if (loading) {
-    return <div>Loading positions...</div>;
+    return <div className="text-center">Loading positions...</div>;
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container max-w-[768px] mx-auto p-4">
       <Card>
         <CardHeader>
           <CardTitle>Available Positions</CardTitle>

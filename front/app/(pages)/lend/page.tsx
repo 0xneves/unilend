@@ -115,7 +115,7 @@ export default function Lend() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container max-w-[768px] mx-auto p-4">
       <Card>
         <CardHeader>
           <CardTitle>Lend Position</CardTitle>
