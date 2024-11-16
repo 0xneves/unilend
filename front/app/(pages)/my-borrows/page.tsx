@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { type BorrowPosition } from "@/app/types";
-import PositionCard from "@/components/PositionCard";
+import BorrowCard from "@/components/BorrowCard";
 import { useAccount } from "wagmi";
 import { readContract } from "@wagmi/core";
 import { unilendABI } from "@/config/abis";
 import { UNILEND_ADDRESS } from "@/config/addresses";
 import { config } from "@/app/wagmi";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 export default function MyBorrows() {
   const [positions, setPositions] = useState<BorrowPosition[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,23 +67,33 @@ export default function MyBorrows() {
   }, [address]);
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="container flex flex-col items-center justify-center mx-auto py-6">
       <h1 className="text-3xl font-bold mb-6">My Borrowed Positions</h1>
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <ScrollArea className="h-[80vh]">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {positions.length === 0 && (
+        <>
+          {positions.length === 0 && (
+            <div className="flex flex-col items-center justify-center">
               <div className="text-center mt-8 text-muted-foreground">
                 No borrowing positions found.
               </div>
-            )}
-            {positions.map((position, index) => (
-              <PositionCard key={index} position={position} />
-            ))}
-          </div>
-        </ScrollArea>
+              <div className="text-center mt-2 text-muted-foreground">
+                Do you want to borrow some tokens?
+              </div>
+              <Button className="mt-4" asChild>
+                <Link href="/borrow">Borrow</Link>
+              </Button>
+            </div>
+          )}
+          <ScrollArea className="h-[80vh]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {positions.map((position, index) => (
+                <BorrowCard key={index} position={position} />
+              ))}
+            </div>
+          </ScrollArea>
+        </>
       )}
     </div>
   );

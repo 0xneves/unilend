@@ -2,11 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ExternalLink } from "lucide-react";
 import { type BorrowPosition, type LendPosition } from "@/app/types";
 
-const PositionCard = ({
-  position,
-}: {
-  position: LendPosition | BorrowPosition;
-}) => {
+const BorrowCard = ({ position }: { position: BorrowPosition }) => {
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
@@ -16,21 +12,15 @@ const PositionCard = ({
       <CardContent>
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            {"time" in position ? (
-              <>
-                <span className="text-muted-foreground">Duration:</span>
-                <span className="font-medium">{`${position.time} seconds`}</span>
-              </>
-            ) : (
-              <>
-                <span className="text-muted-foreground">Deadline:</span>
-                <span className="font-medium">
-                  {new Date(Number(position.deadline) * 1000).toLocaleString(undefined, {
-                    timeZoneName: 'short'
-                  })}
-                </span>
-              </>
-            )}
+            <span className="text-muted-foreground">Deadline:</span>
+            <span className="font-medium">
+              {new Date(Number(position.deadline) * 1000).toLocaleString(
+                undefined,
+                {
+                  timeZoneName: "short",
+                }
+              )}
+            </span>
           </div>
 
           <div className="flex justify-between items-center">
@@ -53,4 +43,4 @@ const PositionCard = ({
   );
 };
 
-export default PositionCard;
+export default BorrowCard;

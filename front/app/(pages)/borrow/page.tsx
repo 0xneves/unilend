@@ -95,7 +95,6 @@ export default function Borrow() {
           <CardTitle>Available Positions</CardTitle>
         </CardHeader>
         <CardContent>
-          
           <div className="grid gap-4">
             {positions.length === 0 ? (
               <div>No positions available for borrowing</div>

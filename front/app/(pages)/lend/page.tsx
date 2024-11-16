@@ -40,7 +40,6 @@ export default function Lend() {
     return ownerAddress;
   };
 
-  // Improve error handling in handleSearch
   const handleSearch = async () => {
     setIsLoading(true);
     try {
@@ -69,7 +68,6 @@ export default function Lend() {
     }
   };
 
-  // Improve error handling in handleLend
   const handleLend = async () => {
     try {
       setIsLoading(true);
