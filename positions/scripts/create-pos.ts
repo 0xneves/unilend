@@ -20,8 +20,8 @@ const positionManager = new ethers.Contract(
 const fee = 3000; // 0.3% fee tier
 const sqrtPriceX96 = TickMath.getSqrtRatioAtTick(0).toString(); // Initialize price at 1:1 for simplicity
 
-const amount0 = ethers.utils.parseUnits("20000", 18); // 20,000 Token A
-const amount1 = ethers.utils.parseUnits("20000", 18); // 20,000 Token B
+const amount0 = ethers.utils.parseUnits("4000", 18); // 20,000 Token A
+const amount1 = ethers.utils.parseUnits("4000", 18); // 20,000 Token B
 
 async function main() {
   try {
@@ -36,14 +36,14 @@ async function main() {
     console.log("Approved Token A and Token B for spending.");
 
     // 2. Create and Initialize Pool if Necessary
-    const tx2 = await positionManager.createAndInitializePoolIfNecessary(Token1, Token0, fee, sqrtPriceX96);
-    await tx2.wait();
-    console.log("Pool tx :", tx2.hash);
+    // const tx2 = await positionManager.createAndInitializePoolIfNecessary(Token1, Token0, fee, sqrtPriceX96);
+    // await tx2.wait();
+    // console.log("Pool tx :", tx2.hash);
 
     // 3. Mint a New Position and Provide Liquidity
     const deadline = Math.floor(Date.now() / 1000) + 60 * 10; // 10-minute deadline
-    const tickLower = -6000; // Adjust ticks based on range you want
-    const tickUpper = 6000;
+    const tickLower = -600; // Adjust ticks based on range you want
+    const tickUpper = 600;
 
     const tx = await positionManager.mint({
       token0: Token1,

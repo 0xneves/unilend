@@ -31,7 +31,7 @@
     "compile": "npx hardhat compile",
     "deploy:tokens": "npx hardhat run scripts/deploy-tokens.ts",
     "deploy:unilend": "npx hardhat run scripts/deploy-unilend.ts",
-    "create-pool": "npx hardhat run scripts/create-pool.ts",
+    "create-pos": "npx hardhat run scripts/create-pos.ts",
     "swap-tokens": "npx hardhat run scripts/swap-tokens.ts"
   }
 }
