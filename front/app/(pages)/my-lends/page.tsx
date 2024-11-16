@@ -10,6 +10,7 @@ import { UNILEND_ADDRESS } from "@/config/addresses";
 import { unilendABI } from "@/config/abis";
 import { config } from "@/app/wagmi";
 import { Button } from "@/components/ui/button";
+import { formatEther } from "viem";
 import Link from "next/link";
 
 export default function MyLends() {
@@ -37,7 +38,7 @@ export default function MyLends() {
           const position: LendPosition = {
             lender: lendPosition.lender,
             tokenId: lendPosition.tokenId.toString(),
-            price: lendPosition.price,
+            price: formatEther(lendPosition.price),
             time: lendPosition.time,
             isAvailable: lendPosition.isAvailable,
             blockscoutUrl: `https://unichain-sepolia.blockscout.com/address/${UNILEND_ADDRESS}`, // adjust for your network

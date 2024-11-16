@@ -8,6 +8,7 @@ import { UNILEND_ADDRESS } from "@/config/addresses";
 import { writeContract } from "@wagmi/core";
 import { config } from "@/app/wagmi";
 import { toast } from "sonner";
+import { formatEther } from "viem";
 
 const LendCard = ({ position }: { position: LendPosition }) => {
   const cancelLend = async (tokenId: string) => {
@@ -59,7 +60,7 @@ const LendCard = ({ position }: { position: LendPosition }) => {
 
           <div className="flex justify-between items-center">
             <span className="text-muted-foreground">Price:</span>
-            <span className="font-medium">{position.price} ETH</span>
+            <span className="font-medium">{`${formatEther(position.price)} ETH`}</span>
           </div>
 
           <a
