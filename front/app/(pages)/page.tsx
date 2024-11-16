@@ -12,20 +12,29 @@ const Home: NextPage = () => {
 
   return (
     <div className="w-[100vw] h-[90vh] flex flex-col justify-center items-center gap-4">
-      <Image src={logo} alt="Logo" width={400} height={400} className="-mt-32" />
+      <Image
+        src={logo}
+        alt="Logo"
+        width={400}
+        height={400}
+        className="-mt-32"
+      />
       <div className="flex flex-row gap-4">
         <Button
           onClick={() => {
-          router.push("/lend");
-        }}
-      >
-        Lend Now
-      </Button>
-      <Button
-        onClick={() => {
-          router.push("/borrow");
-        }}
-      >
+            router.push("/lend");
+          }}
+          className="w-[120px]"
+        >
+          Lend Now
+        </Button>
+        <Button
+          onClick={() => {
+            router.push("/borrow");
+          }}
+          className="w-[120px]"
+          variant="secondary"
+        >
           Borrow Now
         </Button>
       </div>

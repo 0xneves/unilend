@@ -1,17 +1,15 @@
-import axios from "axios";
-
-export async function fetch(query: any, variables: any) {
+export async function fetchSubgraph(query: any, variables: any) {
   try {
     const headers = {
       "Content-Type": "application/json",
     };
-    const response = await axios.post(
+    const response = await fetch(
       "https://api.studio.thegraph.com/query/95027/unilend/version/latest",
       {
-        query,
-        variables,
-      }, 
-      { headers },
+        method: "POST",
+        body: JSON.stringify({ query, variables }),
+        headers,
+      }
     );
     return { response: response, success: true };
   } catch (err) {
