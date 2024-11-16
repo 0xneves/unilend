@@ -2,9 +2,7 @@
   "name": "valocracy",
   "description": "",
   "version": "1.0.0",
-  "dependencies": {
-    "@openzeppelin/contracts": "^5.0.2"
-  },
+  "dependencies": {},
   "devDependencies": {
     "forge-std": "github:foundry-rs/forge-std#v1.8.1",
     "prettier": "^3.0.0",
