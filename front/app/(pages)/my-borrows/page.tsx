@@ -49,7 +49,7 @@ export default function MyBorrows() {
 
   return (
     <div className="container mx-auto py-6">
-      <h1 className="text-3xl font-bold mb-6">My Lending Positions</h1>
+      <h1 className="text-3xl font-bold mb-6">My Borrowed Positions</h1>
 
       <ScrollArea className="h-[80vh]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

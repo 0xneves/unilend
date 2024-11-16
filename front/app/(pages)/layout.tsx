@@ -18,17 +18,13 @@ export default function PageLayout({
   const locale = "en" as Locale;
 
   return (
-    <html lang="en">
-      <body>
-        <WagmiProvider config={config}>
-          <QueryClientProvider client={queryClient}>
-            <RainbowKitProvider locale={locale}>
-              <Nav />
-              {children}
-            </RainbowKitProvider>
-          </QueryClientProvider>
-        </WagmiProvider>
-      </body>
-    </html>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider locale={locale}>
+          <Nav />
+          {children}
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }
