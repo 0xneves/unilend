@@ -12,9 +12,9 @@ import logo from "@/assets/logo.png";
 const Nav = () => {
   return (
     <div className="h-[10vh] flex justify-between items-center px-2 max-w-[1400px] mx-auto">
-      <div className="w-[250px]">
+      <div className="w-[300px]">
       </div>
-      <NavigationMenu className="w-[250px]">
+      <NavigationMenu className="w-[300px]">
         <NavigationMenuList>
           <NavigationMenuItem className="pr-8">
             <Link href="/" legacyBehavior passHref>
@@ -33,7 +33,7 @@ const Nav = () => {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-      <div className="w-[250px] flex justify-end">
+      <div className="w-[300px] flex justify-end">
         <ConnectButton/>
       </div>
     </div>
