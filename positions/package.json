@@ -28,7 +28,8 @@
   "scripts": {
     "clean": "npx hardhat clean",
     "compile": "npx hardhat compile",
-    "deploy": "npx hardhat run scripts/deploy.ts",
+    "deploy:tokens": "npx hardhat run scripts/deploy-tokens.ts",
+    "deploy:unilend": "npx hardhat run scripts/deploy-unilend.ts",
     "create-pool": "npx hardhat run scripts/create-pool.ts"
   }
 }
