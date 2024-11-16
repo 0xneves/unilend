@@ -102,7 +102,7 @@ interface IUnilend {
    *
    * @param tokenId The token ID of the Uniswap V3 position
    */
-  function claimTokenBack(uint256 tokenId) external;
+  function claimPosition(uint256 tokenId) external;
 
   /**
    * @dev Collect the fees from a borrowed Uniswap V3 position
