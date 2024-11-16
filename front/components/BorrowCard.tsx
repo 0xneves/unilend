@@ -1,8 +1,20 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ExternalLink } from "lucide-react";
 import { type BorrowPosition, type LendPosition } from "@/app/types";
+import { Button } from "./ui/button";
+import { config } from "@/app/wagmi";
+import { writeContract } from "viem/actions";
+import { UNILEND_ADDRESS } from "@/config/addresses";
+import { unilendABI } from "@/config/abis";
+import { toast } from "sonner";
 
-const BorrowCard = ({ position }: { position: BorrowPosition }) => {
+const BorrowCard = ({
+  position,
+  handleCollect,
+}: {
+  position: BorrowPosition;
+  handleCollect: (tokenId: string) => void;
+}) => {
   return (
     <Card className="hover:shadow-lg transition-shadow">
       <CardHeader>
@@ -37,6 +49,10 @@ const BorrowCard = ({ position }: { position: BorrowPosition }) => {
             View on Blockscout
             <ExternalLink size={16} />
           </a>
+
+          <Button onClick={() => handleCollect(position.tokenId)}>
+            Collect
+          </Button>
         </div>
       </CardContent>
     </Card>

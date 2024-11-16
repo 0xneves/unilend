@@ -103,7 +103,11 @@ export default function Lend() {
 
       if (!lendHash) throw new Error("Lending failed");
 
-      toast.success("Position successfully listed for lending!");
+      toast.success("Position successfully listed for lending!", {
+        description: `Tx hash: ${lendHash}, copied to clipboard`,
+      });
+      // copy to clipboard
+      navigator.clipboard.writeText(lendHash);
     } catch (error) {
       console.error("Error lending position:", error);
       toast.error(

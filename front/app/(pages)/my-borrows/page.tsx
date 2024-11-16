@@ -5,66 +5,89 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { type BorrowPosition } from "@/app/types";
 import BorrowCard from "@/components/BorrowCard";
 import { useAccount } from "wagmi";
-import { readContract } from "@wagmi/core";
+import { readContract, writeContract } from "@wagmi/core";
 import { unilendABI } from "@/config/abis";
 import { UNILEND_ADDRESS } from "@/config/addresses";
 import { config } from "@/app/wagmi";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { toast } from "sonner";
+
 export default function MyBorrows() {
   const [positions, setPositions] = useState<BorrowPosition[]>([]);
   const [loading, setLoading] = useState(true);
   const { address } = useAccount();
+  const fetchPositions = async () => {
+    try {
+      // Implement a get with graphql to get all tokenIds
+      const tokenIds = ["11741"]; // Replace with actual token IDs
 
-  useEffect(() => {
-    const fetchPositions = async () => {
-      try {
-        // Assuming you have a way to get the list of all tokenIds
-        // You might need to implement this based on your requirements
-        const tokenIds = ["11741"]; // Replace with actual token IDs
-
-        const borrowPromises = tokenIds.map(async (tokenId) => {
-          const result: any = await readContract(config, {
-            address: UNILEND_ADDRESS,
-            abi: unilendABI,
-            functionName: "borrows",
-            args: [BigInt(tokenId)],
-          });
-
-          // Only include positions where the current user is the borrower and the position is active
-          if (
-            result.borrower.toLowerCase() === address?.toLowerCase() &&
-            result.isActive
-          ) {
-            return {
-              lender: result.lender,
-              borrower: result.borrower,
-              tokenId: tokenId,
-              price: result.price,
-              deadline: Number(result.deadline),
-              isActive: result.isActive,
-              blockscoutUrl: `https://blockscan.com/address/${result.lender}`,
-            };
-          }
-          return null;
+      const borrowPromises = tokenIds.map(async (tokenId) => {
+        const result: any = await readContract(config, {
+          address: UNILEND_ADDRESS,
+          abi: unilendABI,
+          functionName: "borrows",
+          args: [BigInt(tokenId)],
         });
 
-        const fetchedPositions = (await Promise.all(borrowPromises)).filter(
-          (position): position is BorrowPosition => position !== null
-        );
+        // Only include positions where the current user is the borrower and the position is active
+        if (
+          result.borrower.toLowerCase() === address?.toLowerCase() &&
+          result.isActive
+        ) {
+          return {
+            lender: result.lender,
+            borrower: result.borrower,
+            tokenId: tokenId,
+            price: result.price,
+            deadline: Number(result.deadline),
+            isActive: result.isActive,
+            blockscoutUrl: `https://blockscan.com/address/${result.lender}`,
+          };
+        }
+        return null;
+      });
 
-        setPositions(fetchedPositions);
-      } catch (error) {
-        console.error("Error fetching positions:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const fetchedPositions = (await Promise.all(borrowPromises)).filter(
+        (position): position is BorrowPosition => position !== null
+      );
 
+      setPositions(fetchedPositions);
+    } catch (error) {
+      console.error("Error fetching positions:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (address) {
       fetchPositions();
     }
   }, [address]);
+
+  const handleCollect = async (tokenId: string) => {
+    try {
+      const collectTx = await writeContract(config, {
+        address: UNILEND_ADDRESS,
+        abi: unilendABI,
+        functionName: "collect",
+        args: [BigInt(tokenId)],
+      });
+
+      if (collectTx) {
+        toast.success("Successfully collected position!", {
+          description: `Tx hash: ${collectTx}, copied to clipboard`,
+        });
+        // copy to clipboard
+        navigator.clipboard.writeText(collectTx);
+        fetchPositions(); // Refresh the list
+      }
+    } catch (error) {
+      console.error("Error collecting position:", error);
+      toast.error("Failed to collect position");
+    }
+  };
 
   return (
     <div className="container flex flex-col items-center justify-center mx-auto py-6">
@@ -89,7 +112,11 @@ export default function MyBorrows() {
           <ScrollArea className="h-[80vh]">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {positions.map((position, index) => (
-                <BorrowCard key={index} position={position} />
+                <BorrowCard
+                  key={index}
+                  position={position}
+                  handleCollect={handleCollect}
+                />
               ))}
             </div>
           </ScrollArea>
