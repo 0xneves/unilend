@@ -103,9 +103,9 @@ contract Unilend is IERC721Receiver, IUnilend {
   }
 
   /**
-   * @dev See {IUnilend-claimTokenBack}
+   * @dev See {IUnilend-claimPosition}
    */
-  function claimTokenBack(uint256 tokenId) external {
+  function claimPosition(uint256 tokenId) external {
     Borrow memory _borrow = _borrows[tokenId];
 
     if (!_borrow.isActive) revert BorrowNotActive();
