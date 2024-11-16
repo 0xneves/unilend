@@ -15,7 +15,7 @@ body {
   :root {
     --background: 236 78% 11%;
     --foreground: 0 0% 98%;
-    --card: 236 78% 11%;
+    --card: 236 78% 9%;
     --card-foreground: 0 0% 98%;
     --popover: 236 78% 11%;
     --popover-foreground: 0 0% 98%;
@@ -42,7 +42,7 @@ body {
   .dark {
     --background: 236 78% 11%;
     --foreground: 0 0% 98%;
-    --card: 236 78% 11%;
+    --card: 236 78% 9%;
     --card-foreground: 0 0% 98%;
     --popover: 236 78% 11%;
     --popover-foreground: 0 0% 98%;
