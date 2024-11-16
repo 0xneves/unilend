@@ -11,9 +11,6 @@ contract Unilend is IERC721Receiver, IUnilend {
   mapping(uint256 => Lend) private _lends;
   mapping(uint256 => Borrow) private _borrows;
 
-  mapping(address => uint256[]) private _userLendIds;
-  mapping(address => uint256[]) private _userBorrowIds;
-
   constructor(address _nonfungiblePositionManager) {
     nonfungiblePositionManager = INonfungiblePositionManager(_nonfungiblePositionManager);
   }
@@ -28,8 +25,6 @@ contract Unilend is IERC721Receiver, IUnilend {
       time: duration,
       isAvailable: true
     });
-
-    _userLendIds[msg.sender].push(tokenId);
 
     nonfungiblePositionManager.safeTransferFrom(msg.sender, address(this), tokenId);
 
@@ -53,8 +48,6 @@ contract Unilend is IERC721Receiver, IUnilend {
       deadline: block.timestamp + _lend.time,
       isActive: true
     });
-
-    _userBorrowIds[msg.sender].push(tokenId);
 
     _collect(tokenId, _lend.lender);
 
