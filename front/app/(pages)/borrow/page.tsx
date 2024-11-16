@@ -26,8 +26,8 @@ export default function Borrow() {
 
     try {
       const positions: LendPosition[] = [];
-      // Check positions from 11741 to 11751
-      for (let i = 11741; i <= 11751; i++) {
+
+      for (let i = 11741; i <= 11741; i++) {
         console.log("Fetching position", i);
         const lendPosition: any = await readContract(config, {
           address: UNILEND_ADDRESS,
@@ -71,7 +71,11 @@ export default function Borrow() {
       });
 
       if (borrowTx) {
-        toast.success("Successfully borrowed position!");
+        toast.success("Successfully borrowed position!", {
+          description: `Tx hash: ${borrowTx}, copied to clipboard`,
+        });
+        // copy to clipboard
+        navigator.clipboard.writeText(borrowTx);
         fetchPositions(); // Refresh the list
       }
     } catch (error) {
@@ -84,10 +88,6 @@ export default function Borrow() {
     fetchPositions();
   }, [address]);
 
-  if (loading) {
-    return <div className="text-center">Loading positions...</div>;
-  }
-
   return (
     <div className="container max-w-[768px] mx-auto p-4">
       <Card>
@@ -96,7 +96,9 @@ export default function Borrow() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4">
-            {positions.length === 0 ? (
+            {loading ? (
+              <div>Loading positions...</div>
+            ) : positions.length === 0 ? (
               <div>No positions available for borrowing</div>
             ) : (
               positions.map((position) => (
@@ -106,15 +108,17 @@ export default function Borrow() {
                       <div>
                         <p>Token ID: {position.tokenId}</p>
                         <p>Price: {formatEther(position.price)} ETH</p>
-                        <p>Lender: {position.lender}</p>
+                        <p>Duration: {position.time} seconds</p>
                       </div>
-                      <Button
-                        onClick={() =>
-                          handleBorrow(position.tokenId, position.price)
-                        }
-                      >
-                        Borrow
-                      </Button>
+                      <div className="flex flex-col gap-2">
+                        <Button
+                          onClick={() =>
+                            handleBorrow(position.tokenId, position.price)
+                          }
+                        >
+                          Borrow
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
