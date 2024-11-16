@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
-import { NonfungiblePositionManager, Pool, TickMath } from "@uniswap/v3-sdk";
-import { CurrencyAmount, Percent } from "@uniswap/sdk-core";
+import { TickMath } from "@uniswap/v3-sdk";
 
 const provider = new ethers.providers.JsonRpcProvider(process.env.UNICHAIN_RPC_URL);
 const wallet = new ethers.Wallet(process.env.DEPLOYER_PRIVATE_KEY || "", provider);
