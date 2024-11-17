@@ -45,34 +45,39 @@ export default function Borrow() {
       };
       const res = await fetchSubgraph(QUERY, VARIABLES);
       const data = await res.response?.json();
-
+      console.log("data", data);
       let formattedPositions: LendPosition[] = [];
-      data.data.lendCreateds.forEach(async (lendPosition: any) => {
-        const result: any = await readContract(config, {
-          address: UNILEND_ADDRESS,
-          abi: unilendABI,
-          functionName: "lends",
-          args: [BigInt(lendPosition.tokenId)],
-        });
-
-        // Only include positions where the current user is the lender and the position is available
-        if (result.lender !== address && result.isAvailable) {
-          formattedPositions.push({
-            lender: lendPosition.lender,
-            tokenId: lendPosition.tokenId.toString(),
-            price: lendPosition.price,
-            time: lendPosition.time,
-            isAvailable: lendPosition.isAvailable,
-            blockscoutUrl: `https://unichain-sepolia.blockscout.com/address/${UNILEND_ADDRESS}`,
+      data.data.lendCreateds.forEach(
+        async (lendPosition: any, index: number) => {
+          const result: any = await readContract(config, {
+            address: UNILEND_ADDRESS,
+            abi: unilendABI,
+            functionName: "lends",
+            args: [BigInt(lendPosition.tokenId)],
           });
+          // Only include positions where the current user is the lender and the position is available
+          if (result.lender !== address) {
+            console.log("pushed position", formattedPositions);
+            setPositions([
+              ...positions,
+              {
+                lender: lendPosition.lender,
+                tokenId: lendPosition.tokenId.toString(),
+                price: lendPosition.price,
+                time: lendPosition.time,
+                isAvailable: lendPosition.isAvailable,
+                blockscoutUrl: `https://unichain-sepolia.blockscout.com/address/${UNILEND_ADDRESS}`,
+              },
+            ]);
+          }
+          if (index === data.data.lendCreateds.length - 1) {
+            setLoading(false);
+          }
         }
-      });
-
-      setPositions(formattedPositions);
+      );
+      console.log("formattedPositions", formattedPositions);
     } catch (error) {
       console.error("Error fetching positions:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -115,7 +120,7 @@ export default function Borrow() {
         <div>No positions available for borrowing</div>
       ) : (
         <Card>
-          <CardContent className="flex flex-col gap-4 w-[400px]">
+          <CardContent className="flex flex-col gap-4 w-[600px] p-4 pb-10">
             <div className="grid gap-4">
               {positions.map((position) => (
                 <Card key={position.tokenId}>
