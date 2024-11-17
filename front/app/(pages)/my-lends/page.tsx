@@ -12,6 +12,7 @@ import { config } from "@/app/wagmi";
 import { Button } from "@/components/ui/button";
 import { formatEther } from "viem";
 import Link from "next/link";
+import { fetchSubgraph } from "@/lib/subgraph";
 
 export default function MyLends() {
   const [positions, setPositions] = useState<LendPosition[]>([]);
@@ -26,25 +27,49 @@ export default function MyLends() {
       }
 
       try {
-        const lendPosition: any = await readContract(config, {
-          address: UNILEND_ADDRESS,
-          abi: unilendABI,
-          functionName: "lends",
-          args: [BigInt(11741)], // You'll need to know which tokenIds to check
-        });
+        const QUERY = `
+          query Lended($lender: String!) {
+            lendCreateds(
+              orderBy: time,
+              orderDirection: desc,
+              first: 1
+              where: { lender: $lender }
+            ) {
+              lender
+              price
+              time
+              tokenId
+            }
+          }
+        `;
+        const VARIABLES = {
+          lender: address,
+        };
+        const res = await fetchSubgraph(QUERY, VARIABLES);
+        const data = await res.response?.json();
 
-        // Convert contract data to your LendPosition type
-        if (lendPosition && lendPosition.lender === address) {
-          const position: LendPosition = {
-            lender: lendPosition.lender,
-            tokenId: lendPosition.tokenId.toString(),
-            price: lendPosition.price,
-            time: lendPosition.time,
-            isAvailable: lendPosition.isAvailable,
-            blockscoutUrl: `https://unichain-sepolia.blockscout.com/address/${UNILEND_ADDRESS}`, // adjust for your network
-          };
-          setPositions([position]);
-        }
+        let formattedPositions: LendPosition[] = [];
+        data.data.lendCreateds.forEach(async (position: any) => {
+          const result: any = await readContract(config, {
+            address: UNILEND_ADDRESS,
+            abi: unilendABI,
+            functionName: "lends",
+            args: [BigInt(position.tokenId)],
+          });
+
+          // Only include positions where the current user is the lender and the position is available
+          if (result.lender === address && result.isAvailable) {
+            formattedPositions.push({
+              lender: position.lender,
+              tokenId: position.tokenId.toString(),
+              price: position.price,
+              time: position.time,
+              isAvailable: true,
+              blockscoutUrl: `https://unichain-sepolia.blockscout.com/address/${UNILEND_ADDRESS}`, // adjust for your network
+            });
+          }
+        });
+        setPositions(formattedPositions);
       } catch (error) {
         console.error("Error fetching positions:", error);
       } finally {

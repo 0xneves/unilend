@@ -24,14 +24,17 @@ const BorrowCard = ({
       <CardContent>
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Deadline:</span>
+            {/* the position that came from the subgraph has the duration time(seconds) as deadline field */}
+            {/* <span className="text-muted-foreground">Deadline:</span> */}
+            <span className="text-muted-foreground">Duration:</span>
             <span className="font-medium">
-              {new Date(Number(position.deadline) * 1000).toLocaleString(
+              {position.deadline} seconds
+              {/* {new Date(Number(position.deadline) * 1000).toLocaleString(
                 undefined,
                 {
                   timeZoneName: "short",
                 }
-              )}
+              )} */}
             </span>
           </div>
 

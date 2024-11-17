@@ -16,23 +16,3 @@ export async function fetchSubgraph(query: any, variables: any) {
     return { response: null, success: false };
   }
 }
-
-// Example Usage:
-
-// const QUERY = `
-// query Lended($lender: String!) {
-//   lendCreateds(
-//     orderBy: id
-//     where: { lender: $lender }
-//   ) {
-//     lender
-//     price
-//     time
-//     tokenId
-//   }
-// }
-// `;
-
-// const VARIABLES = { lender: "0xbC17F46df79e31FC7169422F57e496DA501Aa73f" };
-// const response = await fetch(QUERY, VARIABLES);
-// console.log(response);

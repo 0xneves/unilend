@@ -7,27 +7,55 @@ import BorrowCard from "@/components/BorrowCard";
 import { useAccount } from "wagmi";
 import { readContract, writeContract } from "@wagmi/core";
 import { unilendABI } from "@/config/abis";
-import { UNILEND_ADDRESS } from "@/config/addresses";
+import { UNILEND_ADDRESS, UNISWAP_NFT_ADDRESS } from "@/config/addresses";
 import { config } from "@/app/wagmi";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { toast } from "sonner";
+import { fetchSubgraph } from "@/lib/subgraph";
 
 export default function MyBorrows() {
   const [positions, setPositions] = useState<BorrowPosition[]>([]);
   const [loading, setLoading] = useState(true);
   const { address } = useAccount();
-  const fetchPositions = async () => {
-    try {
-      // Implement a get with graphql to get all tokenIds
-      const tokenIds = ["11741"]; // Replace with actual token IDs
 
-      const borrowPromises = tokenIds.map(async (tokenId) => {
+  const fetchPositions = async () => {
+    if (!address) {
+      console.log("No address");
+      // setLoading(false);
+      return;
+    }
+
+    try {
+      const QUERY = `
+          query BorrowCreated($borrower: String!) {
+            borrowCreateds(
+              first: 1,
+              orderBy: deadline,
+              orderDirection: desc,
+              where: { borrower: $borrower }
+            ) {
+              lender
+              borrower
+              price
+              deadline
+              tokenId
+            }
+          }
+        `;
+      const VARIABLES = {
+        borrower: address,
+      };
+      const res = await fetchSubgraph(QUERY, VARIABLES);
+      const data = await res.response?.json();
+
+      let formattedPositions: BorrowPosition[] = [];
+      data.data.borrowCreateds.forEach(async (position: any) => {
         const result: any = await readContract(config, {
           address: UNILEND_ADDRESS,
           abi: unilendABI,
           functionName: "borrows",
-          args: [BigInt(tokenId)],
+          args: [BigInt(position.tokenId)],
         });
 
         // Only include positions where the current user is the borrower and the position is active
@@ -35,24 +63,19 @@ export default function MyBorrows() {
           result.borrower.toLowerCase() === address?.toLowerCase() &&
           result.isActive
         ) {
-          return {
-            lender: result.lender,
-            borrower: result.borrower,
-            tokenId: tokenId,
-            price: result.price,
-            deadline: Number(result.deadline),
-            isActive: result.isActive,
-            blockscoutUrl: `https://blockscan.com/address/${result.lender}`,
-          };
+          formattedPositions.push({
+            lender: position.lender,
+            borrower: position.borrower,
+            price: position.price,
+            deadline: position.deadline,
+            tokenId: position.tokenId,
+            isActive: true,
+            blockscoutUrl: `https://unichain-sepolia.blockscout.com/token/${UNISWAP_NFT_ADDRESS}/instance/${position.tokenId}`, // adjust for your network
+          });
         }
-        return null;
       });
 
-      const fetchedPositions = (await Promise.all(borrowPromises)).filter(
-        (position): position is BorrowPosition => position !== null
-      );
-
-      setPositions(fetchedPositions);
+      setPositions(formattedPositions);
     } catch (error) {
       console.error("Error fetching positions:", error);
     } finally {
@@ -78,6 +101,7 @@ export default function MyBorrows() {
       if (collectTx) {
         toast.success("Successfully collected position!", {
           description: `Tx hash: ${collectTx}, copied to clipboard`,
+          duration: 10000,
         });
         // copy to clipboard
         navigator.clipboard.writeText(collectTx);

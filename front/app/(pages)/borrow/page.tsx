@@ -11,6 +11,7 @@ import { config } from "@/app/wagmi";
 import { toast } from "sonner";
 import { formatEther } from "viem";
 import { LendPosition } from "@/app/types";
+import { fetchSubgraph } from "@/lib/subgraph";
 
 export default function Borrow() {
   const [positions, setPositions] = useState<LendPosition[]>([]);
@@ -19,30 +20,44 @@ export default function Borrow() {
 
   const fetchPositions = async () => {
     if (!address) {
-      console.log("No address");
+      console.error("No address");
       // setLoading(false);
       return;
     }
 
     try {
-      const positions: LendPosition[] = [];
+      const QUERY = `
+        query Lended($lender: String!) {
+          lendCreateds(
+            orderBy: time,
+            orderDirection: desc,
+            first: 1
+          ) {
+            lender
+            price
+            time
+            tokenId
+          }
+        }
+      `;
+      const VARIABLES = {
+        lender: address,
+      };
+      const res = await fetchSubgraph(QUERY, VARIABLES);
+      const data = await res.response?.json();
 
-      for (let i = 11741; i <= 11741; i++) {
-        console.log("Fetching position", i);
-        const lendPosition: any = await readContract(config, {
+      let formattedPositions: LendPosition[] = [];
+      data.data.lendCreateds.forEach(async (lendPosition: any) => {
+        const result: any = await readContract(config, {
           address: UNILEND_ADDRESS,
           abi: unilendABI,
           functionName: "lends",
-          args: [BigInt(i)],
+          args: [BigInt(lendPosition.tokenId)],
         });
-        console.log("Lend position", lendPosition);
-        // Only add position if it exists and belongs to the current user
-        if (
-          lendPosition &&
-          lendPosition.lender !== address &&
-          lendPosition.isAvailable
-        ) {
-          positions.push({
+
+        // Only include positions where the current user is the lender and the position is available
+        if (result.lender !== address && result.isAvailable) {
+          formattedPositions.push({
             lender: lendPosition.lender,
             tokenId: lendPosition.tokenId.toString(),
             price: lendPosition.price,
@@ -51,8 +66,9 @@ export default function Borrow() {
             blockscoutUrl: `https://unichain-sepolia.blockscout.com/address/${UNILEND_ADDRESS}`,
           });
         }
-      }
-      setPositions(positions);
+      });
+
+      setPositions(formattedPositions);
     } catch (error) {
       console.error("Error fetching positions:", error);
     } finally {
@@ -73,6 +89,7 @@ export default function Borrow() {
       if (borrowTx) {
         toast.success("Successfully borrowed position!", {
           description: `Tx hash: ${borrowTx}, copied to clipboard`,
+          duration: 10000,
         });
         // copy to clipboard
         navigator.clipboard.writeText(borrowTx);
@@ -89,19 +106,18 @@ export default function Borrow() {
   }, [address]);
 
   return (
-    <div className="container max-w-[768px] mx-auto p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Available Positions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            {loading ? (
-              <div>Loading positions...</div>
-            ) : positions.length === 0 ? (
-              <div>No positions available for borrowing</div>
-            ) : (
-              positions.map((position) => (
+    <div className="container flex flex-col items-center justify-center mx-auto py-6">
+      <h1 className="text-2xl font-bold mb-6">Borrow Position</h1>
+
+      {loading ? (
+        <div>Loading positions...</div>
+      ) : positions.length === 0 ? (
+        <div>No positions available for borrowing</div>
+      ) : (
+        <Card>
+          <CardContent className="flex flex-col gap-4 w-[400px]">
+            <div className="grid gap-4">
+              {positions.map((position) => (
                 <Card key={position.tokenId}>
                   <CardContent className="p-4">
                     <div className="flex justify-between items-center">
@@ -122,11 +138,11 @@ export default function Borrow() {
                     </div>
                   </CardContent>
                 </Card>
-              ))
-            )}
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

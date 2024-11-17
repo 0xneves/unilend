@@ -105,6 +105,7 @@ export default function Lend() {
 
       toast.success("Position successfully listed for lending!", {
         description: `Tx hash: ${lendHash}, copied to clipboard`,
+        duration: 10000,
       });
       // copy to clipboard
       navigator.clipboard.writeText(lendHash);
@@ -119,52 +120,53 @@ export default function Lend() {
   };
 
   return (
-    <div className="container max-w-[768px] mx-auto p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Lend Position</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-4">
-            {/* Search section */}
-            <div className="flex gap-4">
-              <Input
-                placeholder="Enter token ID"
-                value={tokenId}
-                onChange={(e) => {
-                  setTokenId(e.target.value);
-                  setNftFound(false);
-                }}
-              />
-              <Button onClick={handleSearch} disabled={isLoading || !tokenId}>
-                {isLoading ? "Searching..." : "Search"}
-              </Button>
-            </div>
+    <div className="container flex flex-col items-center justify-center mx-auto py-6">
+      <h1 className="text-2xl font-bold mb-6">Lend Position</h1>
 
-            {/* Lending parameters section - only shown if NFT is found */}
-            {nftFound && (
-              <div className="flex flex-col gap-4 mt-4">
-                <Input
-                  placeholder="Enter price (in ETH)"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                />
-                <Input
-                  placeholder="Enter duration (in seconds)"
-                  value={duration}
-                  onChange={(e) => setDuration(e.target.value)}
-                />
-                <Button
-                  onClick={handleLend}
-                  disabled={isLoading || !price || !duration}
-                >
-                  {isLoading ? "Processing..." : "Lend Position"}
-                </Button>
-              </div>
-            )}
+      <Card>
+        <CardContent className="flex flex-col gap-4 w-[400px]">
+          {/* Search section */}
+          <div className="flex gap-4 justify-center items-center mt-4">
+            <Input
+              placeholder="Enter token ID"
+              value={tokenId}
+              onChange={(e) => {
+                setTokenId(e.target.value);
+                setNftFound(false);
+              }}
+            />
+            <Button onClick={handleSearch} disabled={isLoading || !tokenId}>
+              {isLoading ? "Searching..." : "Search"}
+            </Button>
           </div>
         </CardContent>
       </Card>
+      {nftFound && (
+        <Card className="w-[400px] mt-8">
+          <CardContent>
+            {/* Lending parameters section - only shown if NFT is found */}
+
+            <div className="flex flex-col gap-4 mt-4">
+              <Input
+                placeholder="Enter price (in ETH)"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+              <Input
+                placeholder="Enter duration (in seconds)"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+              />
+              <Button
+                onClick={handleLend}
+                disabled={isLoading || !price || !duration}
+              >
+                {isLoading ? "Processing..." : "Lend Position"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
